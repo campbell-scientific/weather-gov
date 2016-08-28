@@ -1,6 +1,6 @@
 # weather-gov
 
-This repository contains information and Campbell Scientific CRBasic datalogger programs related to working with information on the National Weather Service's [website](https://www.weather.gov).
+This repository contains information and Campbell Scientific CRBasic datalogger programs related to working with information on the National Weather Service's [weather.gov website](https://www.weather.gov).
 
 ----
 
