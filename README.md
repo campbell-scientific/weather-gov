@@ -11,7 +11,7 @@ This repository contains information, supporting files, and Campbell Scientific 
 
 These programs instruct the datalogger to download and parse a current observations XML file from weather.gov.
 
-Tested using:
-CR1000.Std.30 (2016-08-28)
+Tested With
++ CR1000.Std.30 (2016-08-28)
 
 ----
