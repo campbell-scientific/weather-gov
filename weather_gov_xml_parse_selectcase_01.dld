@@ -1,0 +1,105 @@
+'2016-08-28
+'This program instructs the datalogger to download and parse a current
+'  observations XML file from weather.gov.
+
+'To find a link to the XML that you are interested in, go to
+'  http://w1.weather.gov/xml/current_obs/, filter by state, then select
+'  the XML link next to the point of interest.
+
+'This program uses HTTPGet, XMLParse, and Select Case.
+' HTTPGet is used to download the current observations XML file.
+' XMLParse is used to find elements and their values.
+' Select Case is uses XML element names to trigger value assignment to
+' variables.
+
+Public LoggerTemp, BattV
+
+'-----------------------------------------------------------------------------------------------
+Const URL = "http://w1.weather.gov/xml/current_obs/KLGU.xml"
+Public Station_ID As String * 7
+Public Latitude, Longitude
+Public Observation_Time_RFC822 As String * 63
+Public Weather As String * 31
+Public Temp_F, Temp_C, Relative_Humidity
+Public Wind_Dir As String * 15
+Public Wind_Degrees
+Public Wind_mph, Wind_Gust_mph
+Public Wind_kt, Wind_Gust_kt
+Public Pressure_mb, Pressure_in
+Public Dewpoint_F, Dewpoint_C
+Public Visibility_mi
+
+Public Handle As Long
+Dim XML As String * 3000
+Public Header As String * 15
+
+Dim XML_Response As Long
+Dim XML_Value As String * 63
+Dim Element_Name As String * 31
+'-----------------------------------------------------------------------------------------------
+
+BeginProg
+  Scan (1,Min,0,0)
+
+    PanelTemp (LoggerTemp,250)
+    Battery (BattV)
+
+    '-----------------------------------------------------------------------------------------------
+    XML = ""
+    Header = ""
+    Handle = HTTPGet (URL,XML,Header) 'download file to string
+    If Handle > 100 Then
+      'successfully created connection via HTTP
+      Do
+        'parse string containing XML
+        'when find elment name of interest, assign value to variable
+        XML_Response = XMLParse (XML,XML_Value,"","",Element_Name,"",6,4)
+        If XML_Response = 3 Then
+          Select Case Element_Name
+          Case "station_id"
+            Station_ID = XML_Value
+          Case "latitude"
+            Latitude = XML_Value
+          Case "longitude"
+            Longitude = XML_Value
+          Case "observation_time_rfc822"
+            Observation_Time_RFC822 = XML_Value
+          Case "weather"
+            Weather = XML_Value
+          Case "temp_f"
+            Temp_F = XML_Value
+          Case "temp_c"
+            Temp_C = XML_Value
+          Case "relative_humidity"
+            Relative_Humidity = XML_Value
+          Case "wind_dir"
+            Wind_Dir = XML_Value
+          Case "wind_degrees"
+            Wind_Degrees = XML_Value
+          Case "wind_mph"
+            Wind_mph = XML_Value
+          Case "wind_gust_mph"
+            Wind_Gust_mph = XML_Value
+          Case "wind_kt"
+            Wind_kt = XML_Value
+          Case "wind_gust_kt"
+            Wind_Gust_kt = XML_Value
+          Case "pressure_mb"
+            Pressure_mb = XML_Value
+          Case "pressure_in"
+            Pressure_in = XML_Value
+          Case "dewpoint_f"
+            Dewpoint_F = XML_Value
+          Case "dewpoint_c"
+            Dewpoint_C = XML_Value
+          Case "visibility_mi"
+            Visibility_mi = XML_Value
+          EndSelect
+        EndIf
+      Loop While ((XML_Response > 0) AND (XML_Response < 4))
+    EndIf
+    '-----------------------------------------------------------------------------------------------
+
+  NextScan
+EndProg
+
